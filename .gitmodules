@@ -1,0 +1,15 @@
+[submodule "src/api-core"]
+	path = src/api-core
+	url = http://gitea.doiyu.mx/DOIYUDEV/api-core.git
+[submodule "src/api-security"]
+	path = src/api-security
+	url = http://gitea.doiyu.mx/DOIYUDEV/api_security.git
+[submodule "src/sig-front"]
+	path = src/sig-front
+	url = http://gitea.doiyu.mx/DOIYUDEV/sig-front.git
+[submodule "src/sig-api"]
+	path = src/sig-api
+	url = http://gitea.doiyu.mx/DOIYUDEV/sig-coreapi.git
+[submodule "src/api-storage"]
+	path = src/api-storage
+	url = http://gitea.doiyu.mx/DOIYUDEV/api-storage.git
