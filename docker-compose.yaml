@@ -1,28 +1,28 @@
 version: "3"
 
 services:
-    # sig.api:
-    #     build:
-    #         context: ./src/sig-api/vendor/laravel/sail/runtimes/8.3
-    #         dockerfile: Dockerfile
-    #         args:
-    #             WWWGROUP: '1000'
-    #     image: sail-8.3/app
-    #     extra_hosts:
-    #         - 'host.docker.internal:host-gateway'
-    #     ports:
-    #         - '8080:80'
-    #         # - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
-    #     environment:
-    #         WWWUSER: 'sail'
-    #         LARAVEL_SAIL: 1
-    #         XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
-    #         XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
-    #         IGNITION_LOCAL_SITES_PATH: '${PWD}'
-    #     volumes:
-    #         - './src/sig-api/:/var/www/html'
-    #     networks:
-    #       custom:
+    sig.api:
+        build:
+            context: ./src/sig-api/vendor/laravel/sail/runtimes/8.3
+            dockerfile: Dockerfile
+            args:
+                WWWGROUP: '1000'
+        image: sail-8.3/app
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        ports:
+            - '8080:80'
+            # - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+        environment:
+            WWWUSER: 'sail'
+            LARAVEL_SAIL: 1
+            XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
+            XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
+            IGNITION_LOCAL_SITES_PATH: '${PWD}'
+        volumes:
+            - './src/sig-api/:/var/www/html'
+        networks:
+          custom:
 
     # api.storage:
     #     build: src/api-storage
@@ -42,36 +42,35 @@ services:
     #     networks:
     #       custom:
 
-    # api.security:
-    #     build: src/api-security
-    #     environment: 
-    #     - ASPNETCORE_ENVIRONMENT=Development
-    #     - ASPNETCORE_URLS=http://+:80
-    #     - DbServer_psql="10.152.200.37"
-    #     - DbPort_psql="5432"
-    #     - DbName_psql="security_database"
-    #     - DbUser_psql="postgres"
-    #     - DbPassword_psql="PqCanh94VTSRRJ"
-    #     - ApiPrefix=""
-    #     restart: always
-    #     networks:
-    #         custom:
+    apisecurity-svc:
+        build: src/api-security
+        environment: 
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_URLS=http://+:80
+        - DbServer_psql="10.152.200.37"
+        - DbPort_psql="5432"
+        - DbName_psql="sig_h_security"
+        - DbUser_psql="postgres"
+        - DbPassword_psql="PqCanh94VTSRRJ"
+        - ApiPrefix=security
+        restart: always
+        networks:
+            custom:
 
-    # api.core:
-    #     container_name: core
-    #     build: src/api-core
-    #     environment: 
-    #     - ASPNETCORE_ENVIRONMENT=Development
-    #     - ASPNETCORE_URLS=http://+:80
-    #     - DbServer_psql="10.152.200.37"
-    #     - DbPort_psql="5432"
-    #     - DbName_psql="security_database"
-    #     - DbUser_psql="postgres"
-    #     - DbPassword_psql="PqCanh94VTSRRJ"
-    #     - ApiPrefix=""
-    #     restart: always
-    #     networks:
-    #         custom:
+    core-svc:
+        build: src/api-core
+        environment: 
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_URLS=http://+:80
+        - DbServer_psql="10.152.200.37"
+        - DbPort_psql="5432"
+        - DbName_psql="sig_h_core"
+        - DbUser_psql="postgres"
+        - DbPassword_psql="PqCanh94VTSRRJ"
+        - ApiPrefix=core
+        restart: always
+        networks:
+            custom:
             
     sig.front:
         build: ./src/sig-front/
