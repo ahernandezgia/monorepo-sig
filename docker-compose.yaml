@@ -95,13 +95,31 @@ services:
         networks:
           custom:
 
+
+    minio:
+        image: quay.io/minio/minio:latest
+        ports:
+        - 9000:9000
+        - 9001:9001
+        environment:
+            MINIO_ROOT_USER: ahernandez
+            MINIO_ROOT_PASSWORD: password123
+            MINIO_BROWSER_REDIRECT_URL: https://s3.doiyu.mx/minio/ui/
+            MINIO_DOMAIN: s3.doiyu.mx
+        volumes:
+        - ./s3:/data
+        command: server /data --address ":9000" --console-address ":9001"
+        networks:
+          custom:
+
     nginx-proxy:
         restart: always
         build: reverse-proxy
         ports:
         - 80:80 #cambiar a 80
         - 443:443
-        # depends_on:
+        depends_on:
+         - minio
         # - api.security
         # - api.storage
         # - api.core
