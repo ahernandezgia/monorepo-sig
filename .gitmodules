@@ -13,3 +13,6 @@
 [submodule "src/api-storage"]
 	path = src/api-storage
 	url = http://gitea.doiyu.mx/DOIYUDEV/api-storage.git
+[submodule "src/api-gateway"]
+	path = src/api-gateway
+	url = http://gitea.doiyu.mx/DOIYUDEV/api_gateway.git
