@@ -211,7 +211,6 @@ services:
             - './reverse-proxy/:/etc/nginx/'
         networks:
           custom:
-
 volumes:
     data:
 

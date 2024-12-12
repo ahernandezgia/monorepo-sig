@@ -16,3 +16,15 @@
 [submodule "src/api-gateway"]
 	path = src/api-gateway
 	url = http://gitea.doiyu.mx/DOIYUDEV/api_gateway.git
+[submodule "src/api-sig-searchs"]
+	path = src/api-sig-searchs
+	url = http://gitea.doiyu.mx/DOIYUDEV/api-sig-searchs.git
+[submodule "src/api-events"]
+	path = src/api-events
+	url = git@github.com:GIA-A-DEV/api-events.git
+[submodule "src/api-audits"]
+	path = src/api-audits
+	url = git@github.com:GIA-A-DEV/api-audits.git
+[submodule "src/api-inquests"]
+	path = src/api-inquests
+	url = git@github.com:GIA-A-DEV/api-inquests.git
