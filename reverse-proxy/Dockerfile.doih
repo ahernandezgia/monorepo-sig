@@ -1,0 +1,5 @@
+FROM nginx
+ARG CACHEBUST=1 
+COPY nginx_doih.conf /etc/nginx/nginx.conf
+COPY certs/doih/cert.crt /etc/nginx/certs/cert.crt
+COPY certs/doih/cert.key /etc/nginx/certs/cert.key

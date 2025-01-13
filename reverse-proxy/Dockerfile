@@ -1,5 +1,5 @@
 FROM nginx
 ARG CACHEBUST=1 
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY certs/CA_AUTH_DOIYU_MX_V2.crt /etc/nginx/certs/doiyu.crt
-COPY certs/CA_AUTH_DOIYU_MX_V2-decrypted.key /etc/nginx/certs/doiyu.key
+COPY nginx_doiyu/nginx.conf /etc/nginx/nginx.conf
+COPY certs/doiyu/cert.crt /etc/nginx/certs/cert.crt
+COPY certs/doiyu/cert.key /etc/nginx/certs/cert.key

@@ -1,0 +1,222 @@
+services:
+    sig.api:
+        build:
+            context: ./src/sig-api/vendor/laravel/sail/runtimes/8.3
+            dockerfile: Dockerfile
+            args:
+                WWWGROUP: '1000'
+        image: sail-8.3/app
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        ports:
+            - '8080:80'
+            # - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+        environment:
+            WWWUSER: 'sail'
+            LARAVEL_SAIL: 1
+            # XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
+            # XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
+            # IGNITION_LOCAL_SITES_PATH: '${PWD}'
+        volumes:
+            - './src/sig-api/:/var/www/html'
+        networks:
+          custom:
+    apistorage-svc:
+        image: ahgia/api-storage:1.0
+        environment:
+        - ENV=dev
+        - DB_URI=mongodb://10.34.0.3:27017/File
+        - BD_NAME=File_HumanResources
+        - PORT=80
+        - HOST=http://localhost
+        - DB_CONNECTION=pgsql
+        - DB_HOST=postgresql
+        - DB_PORT=5432
+        - DB_DATABASE=sig
+        - DB_USER=postgres
+        - DB_PASSWORD=S3cret
+        - DB_SCHEMA=Human_resources
+        networks:
+          custom:
+    # # apisecurity-svc:
+    # #     build: src/api-security
+    # #     environment: 
+    # #     - ASPNETCORE_ENVIRONMENT=Development
+    # #     - ASPNETCORE_URLS=http://+:80
+    # #     - DbServer_psql="10.152.200.37"
+    # #     - DbPort_psql="5432"
+    # #     - DbName_psql="sig_h_security"
+    # #     - DbUser_psql="postgres"
+    # #     - DbPassword_psql="Limeade7,Oxygen,Chaps"
+    # #     - ApiPrefix=security
+    # #     restart: always
+    # #     networks:
+    # #         custom:
+    # # core-svc:
+    # #     build: src/api-core
+    # #     environment: 
+    # #     - ASPNETCORE_ENVIRONMENT=Development
+    # #     - ASPNETCORE_URLS=http://+:80
+    # #     - DbServer_psql="10.152.200.37"
+    # #     - DbPort_psql="5432"
+    # #     - DbName_psql="sig_h_core"
+    # #     - DbUser_psql="postgres"
+    # #     - DbPassword_psql="Limeade7,Oxygen,Chaps"
+    # #     - ApiPrefix=core
+    # #     restart: always
+    # #     networks:
+    # #         custom:
+    api-inquests-svc:
+        image: ahgia/api-inquests:1.0
+        ports:
+          - 8004:80
+        environment: 
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_URLS=http://+:80
+        - DbServer_psql="10.34.0.3"
+        - DbPort_psql="5432"
+        - DbName_psql="SIG_DOIH"
+        - DbUser_psql="postgres"
+        - DbPassword_psql="Limeade7,Oxygen,Chaps"
+        - ApiPrefix=inquests
+        - Conf_TipoFolio=20
+        - Conf_Aspectos_A_Mejorar=3
+        - Conf_Dia_Limite_Aplicacion=30
+        - Conf_Dia_Limite_Validar=true
+        restart: always
+        networks:
+            custom:
+    sig-searchs-svc:
+        image: ahgia/api-sig-searchs:1.0
+        ports:
+          - "8000:80"
+        environment:
+          ENV: production
+          PORT: 80
+          HOST: "http://localhost"
+          DB_HOST: 10.34.0.3
+          DB_PORT: 5432
+          DB_DATABASE: SIG_DOIH
+          DB_PASSWORD: Limeade7,Oxygen,Chaps
+          DB_USER: postgres
+          DB_SCHEMA: sig
+          DB_LOGS: "true"
+        networks:
+          custom:
+    api-audits-svc:
+        image: ahgia/api-audits:1.0
+        ports:
+          - 3001:80
+        restart: unless-stopped
+        environment:
+          ENV: production
+          PORT: 80
+          HOST: http://localhost
+          DB_HOST: 10.34.0.3
+          DB_PORT: 5432
+          DB_DATABASE: SIG_DOIH
+          DB_PASSWORD: Limeade7,Oxygen,Chaps
+          DB_USER: postgres
+          DB_SCHEMA: doiyu_audits
+          DB_LOGS: "true"
+          API_SIG: http://api-audits-svc
+          API_AUDITS: http://localhost:80
+          API_EVENTS: http://api-events-svc
+          DB_URI: mongodb://mongodb-svc:27017/doc_auditorias
+        networks:
+          custom:
+    api-events-svc:
+        image: ahgia/api-events:1.0
+        ports:
+          - "8002:80"
+        environment:
+          ENV: production
+          PORT: 80
+          HOST: "http://localhost"
+          DB_HOST: 10.34.0.3
+          DB_PORT: 5432
+          DB_DATABASE: SIG_DOIH
+          DB_PASSWORD: Limeade7,Oxygen,Chaps
+          DB_USER: postgres
+          DB_SCHEMA: doiyu_events
+          DB_LOGS: "true"
+          API_AUDITS: http://api-audits-svc
+          API_SIG: http://sig-searchs-svc
+        networks:
+          custom:
+    sig.front:
+        image: ahgia/sig-front-doih:1.11
+        ports:
+            - 81:80
+            - 444:443
+        environment:
+          DB_HOST: 10.34.0.3
+          DB_PORT: 5432
+          DB_DATABASE: SIG_DOIH
+          DB_PASSWORD: "Limeade7,Oxygen,Chaps"
+        networks:
+          custom:
+    gateway:
+        image: ahgia/gateway:1.0
+        environment:
+        - ASPNETCORE_ENVIRONMENT=Docker
+        - ASPNETCORE_URLS=http://+:80
+        - ClientApp=https://localhost
+        - VIRTUAL_HOST=apisig.doih.hn
+        - VIRTUAL_PORT=80
+        networks:
+          custom:
+    minio:
+        image: quay.io/minio/minio:latest
+        ports:
+        - 9000:9000
+        - 9001:9001
+        environment:
+            MINIO_ROOT_USER: ahernandez
+            MINIO_ROOT_PASSWORD: password123
+            MINIO_BROWSER_REDIRECT_URL: https://s3.doih.hn/minio/ui/
+            MINIO_DOMAIN: s3.doih.hn
+        volumes:
+        - ./s3:/data
+        command: server /data --address ":9000" --console-address ":9001"
+        networks:
+          custom:
+    mongodb-svc:
+        image: mongo
+        environment:
+        - PUID=1000
+        - PGID=1000
+        - MONGO_INITDB_ROOT_USERNAME=
+        - MONGO_INITDB_ROOT_PASSWORD=
+        # DB_URI: mongodb://localhost
+        volumes:
+        - /mongo:/data/db
+        ports:
+        - 27017:27017
+        restart: unless-stopped
+        networks:
+         custom:
+    nginx-proxy:
+        restart: always
+        image: ahgia/proxy-doih:1.1
+        ports:
+        - 80:80 #cambiar a 80
+        - 443:443
+        depends_on:
+        # - minio
+        # - api.security
+        # - api.storage
+        # - api.core
+        # - sig.api
+        - sig.front
+        # - gateway
+        networks:
+          custom:
+volumes:
+    data:
+
+networks:
+  custom:
+    ipam:
+      config:
+        - subnet: 10.6.0.0/16
