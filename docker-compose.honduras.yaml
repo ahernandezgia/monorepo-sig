@@ -30,11 +30,11 @@ services:
         - PORT=80
         - HOST=http://localhost
         - DB_CONNECTION=pgsql
-        - DB_HOST=postgresql
+        - DB_HOST=10.34.0.3
         - DB_PORT=5432
-        - DB_DATABASE=sig
+        - DB_DATABASE=sig_test
         - DB_USER=postgres
-        - DB_PASSWORD=S3cret
+        - DB_PASSWORD=Limeade7,Oxygen,Chaps
         - DB_SCHEMA=Human_resources
         networks:
           custom:
@@ -75,7 +75,7 @@ services:
         - ASPNETCORE_URLS=http://+:80
         - DbServer_psql="10.34.0.3"
         - DbPort_psql="5432"
-        - DbName_psql="SIG_DOIH"
+        - DbName_psql="sig_test"
         - DbUser_psql="postgres"
         - DbPassword_psql="Limeade7,Oxygen,Chaps"
         - ApiPrefix=inquests
@@ -96,7 +96,7 @@ services:
           HOST: "http://localhost"
           DB_HOST: 10.34.0.3
           DB_PORT: 5432
-          DB_DATABASE: SIG_DOIH
+          DB_DATABASE: sig_test
           DB_PASSWORD: Limeade7,Oxygen,Chaps
           DB_USER: postgres
           DB_SCHEMA: sig
@@ -114,7 +114,7 @@ services:
           HOST: http://localhost
           DB_HOST: 10.34.0.3
           DB_PORT: 5432
-          DB_DATABASE: SIG_DOIH
+          DB_DATABASE: sig_test
           DB_PASSWORD: Limeade7,Oxygen,Chaps
           DB_USER: postgres
           DB_SCHEMA: doiyu_audits
@@ -135,7 +135,7 @@ services:
           HOST: "http://localhost"
           DB_HOST: 10.34.0.3
           DB_PORT: 5432
-          DB_DATABASE: SIG_DOIH
+          DB_DATABASE: sig_test
           DB_PASSWORD: Limeade7,Oxygen,Chaps
           DB_USER: postgres
           DB_SCHEMA: doiyu_events
@@ -145,14 +145,14 @@ services:
         networks:
           custom:
     sig.front:
-        image: ahgia/sig-front-doih:1.11
+        image: ahgia/sig-front-doih:1.12
         ports:
             - 81:80
             - 444:443
         environment:
           DB_HOST: 10.34.0.3
           DB_PORT: 5432
-          DB_DATABASE: SIG_DOIH
+          DB_DATABASE: sig_test
           DB_PASSWORD: "Limeade7,Oxygen,Chaps"
         networks:
           custom:
