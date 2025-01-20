@@ -145,7 +145,7 @@ services:
         networks:
           custom:
     sig.front:
-        image: ahgia/sig-front-doih:1.11
+        image: ahgia/sig-front-doih:1.12
         #build: 
         #  context: /src/sig-front
         #  dockerfile: Dockerfile.doih
