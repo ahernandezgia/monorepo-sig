@@ -32,40 +32,65 @@ services:
         - DB_CONNECTION=pgsql
         - DB_HOST=host.docker.internal
         - DB_PORT=5402
-        - DB_DATABASE=sig
+        - DB_DATABASE=SIG_DOIH_LIMPIA
         - DB_USER=postgres
         - DB_PASSWORD=S3cret
         - DB_SCHEMA=Human_resources
         networks:
           custom:
-    # # apisecurity-svc:
-    # #     build: src/api-security
-    # #     environment: 
-    # #     - ASPNETCORE_ENVIRONMENT=Development
-    # #     - ASPNETCORE_URLS=http://+:80
-    # #     - DbServer_psql="10.152.200.37"
-    # #     - DbPort_psql="5402"
-    # #     - DbName_psql="sig_h_security"
-    # #     - DbUser_psql="postgres"
-    # #     - DbPassword_psql="1234"
-    # #     - ApiPrefix=security
-    # #     restart: always
-    # #     networks:
-    # #         custom:
-    # # core-svc:
-    # #     build: src/api-core
-    # #     environment: 
-    # #     - ASPNETCORE_ENVIRONMENT=Development
-    # #     - ASPNETCORE_URLS=http://+:80
-    # #     - DbServer_psql="10.152.200.37"
-    # #     - DbPort_psql="5402"
-    # #     - DbName_psql="sig_h_core"
-    # #     - DbUser_psql="postgres"
-    # #     - DbPassword_psql="1234"
-    # #     - ApiPrefix=core
-    # #     restart: always
-    # #     networks:
-    # #         custom:
+    apisecurity-svc:
+        build: src/api-security
+        environment: 
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_URLS=http://+:80
+        - AllowedHosts="*"
+        - Mail_Host="sandbox.smtp.mailtrap.io"
+        - Mail_Ssl=true
+        - Mail_Port="2525"
+        - Mail_UserName="19917d20d35cab"
+        - Mail_Password="707d3c136d22de"
+        - EmailFromDefault="cau@gia.mx"
+        - Jwt_SecretKey="qwertyuiopasdfghjklzxcvbnm123456"
+        - Jwt_Issuer="http://192.167.215.182:7856"
+        - Jwt_Audience="doiyu.mx"
+        - Jwt_subject="WebApiSecurity"
+        - Jwt_ValidateIssuerSigningKey=true
+        - Jwt_ValidateIssuer=false
+        - Jwt_ValidateAudience=false
+        - Jwt_ValidateLifetime=true
+        - Jwt_MinsDefault="60"
+        - Jwt_MinsExtraSumToMinsDefault="5"
+        - Jwt_MinsDefault="1440"
+        - DbServer_psql="localhost"
+        - DbPort_psql="5402"
+        - DbName_psql="SIG_DOIH_SECURITY_LIMPIA"
+        - DbUser_psql="postgres"
+        - DbPassword_psql="1234"
+        - ApiPrefix="/security"
+        restart: always
+        networks:
+            custom:
+    core-svc:
+        build: src/api-core
+        environment: 
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_URLS=http://+:80
+        - AllowedHosts="*"
+        - ServerSecurity="http://localhost:5643"
+        - Jwt_SecretKey="qwertyuiopasdfghjklzxcvbnm123456"
+        - Jwt_Issuer="http://localhost:5643"
+        - Jwt_Audience="doiyu.mx"
+        - Jwt_subject="WebApiSecurity"
+        - SecurityDisable=true
+        - DbServer_psql="localhost"
+        - DbPort_psql="5402"
+        - DbName_psql="SIG_DOIH_CORE_LIMPIA"
+        - DbUser_psql="postgres"
+        - DbPassword_psql="1234"
+        - ApiPrefix="/core"
+        restart: always
+        networks:
+            custom:
     api-inquests-svc:
         image: ahgia/api-inquests:1.0
         ports:
@@ -75,7 +100,7 @@ services:
         - ASPNETCORE_URLS=http://+:80
         - DbServer_psql="host.docker.internal"
         - DbPort_psql="5402"
-        - DbName_psql="SIG_DOIH_250106"
+        - DbName_psql="SIG_DOIH_LIMPIA"
         - DbUser_psql="postgres"
         - DbPassword_psql="1234"
         - ApiPrefix=inquests
@@ -96,7 +121,7 @@ services:
           HOST: "http://localhost"
           DB_HOST: host.docker.internal
           DB_PORT: 5402
-          DB_DATABASE: SIG_DOIH_250106
+          DB_DATABASE: SIG_DOIH_LIMPIA
           DB_PASSWORD: 1234
           DB_USER: postgres
           DB_SCHEMA: sig
@@ -114,7 +139,7 @@ services:
           HOST: http://localhost
           DB_HOST: host.docker.internal
           DB_PORT: 5402
-          DB_DATABASE: SIG_DOIH_250106
+          DB_DATABASE: SIG_DOIH_LIMPIA
           DB_PASSWORD: 1234
           DB_USER: postgres
           DB_SCHEMA: doiyu_audits
@@ -135,7 +160,7 @@ services:
           HOST: "http://localhost"
           DB_HOST: host.docker.internal
           DB_PORT: 5402
-          DB_DATABASE: SIG_DOIH_250106
+          DB_DATABASE: SIG_DOIH_LIMPIA
           DB_PASSWORD: 1234
           DB_USER: postgres
           DB_SCHEMA: doiyu_events
@@ -145,10 +170,10 @@ services:
         networks:
           custom:
     sig.front:
-        image: ahgia/sig-front-doih:1.12
-        #build: 
-        #  context: /src/sig-front
-        #  dockerfile: Dockerfile.doih
+        # image: ahgia/sig-front-doih:1.12
+        build: 
+         context: /src/sig-front
+         dockerfile: Dockerfile.doih
         ports:
             - 81:80
             - 444:443
@@ -157,7 +182,7 @@ services:
         environment:
           DB_HOST: host.docker.internal
           DB_PORT: 5402
-          DB_DATABASE: SIG_DOIH_250106
+          DB_DATABASE: SIG_DOIH_LIMPIA
         networks:
           custom:
     gateway:
