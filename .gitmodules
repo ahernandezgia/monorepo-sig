@@ -28,3 +28,6 @@
 [submodule "src/api-inquests"]
 	path = src/api-inquests
 	url = git@github.com:GIA-A-DEV/api-inquests.git
+[submodule "src/api-tickets"]
+	path = src/api-tickets
+	url = git@github.com:GIA-A-DEV/api-tickets.git
