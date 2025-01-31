@@ -1,24 +1,16 @@
 services:
     sig.api:
-        build:
-            context: ./src/sig-api/vendor/laravel/sail/runtimes/8.3
-            dockerfile: Dockerfile
-            args:
-                WWWGROUP: '1000'
-        image: sail-8.3/app
-        extra_hosts:
-            - 'host.docker.internal:host-gateway'
+        build: 
+         context: /src/sig-api
+         dockerfile: Dockerfile
         ports:
-            - '8080:80'
-            # - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
-        environment:
-            WWWUSER: 'sail'
-            LARAVEL_SAIL: 1
-            # XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
-            # XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
-            # IGNITION_LOCAL_SITES_PATH: '${PWD}'
+          - '8080:80'
         volumes:
-            - './src/sig-api/:/var/www/html'
+           - './src/sig-api/:/var/www/html'
+        environment:
+          DB_HOST: host.docker.internal
+          DB_PORT: 5402
+          DB_DATABASE: SIG_DOIH_LIMPIA
         networks:
           custom:
     apistorage-svc:
@@ -39,34 +31,37 @@ services:
         networks:
           custom:
     apisecurity-svc:
-        build: src/api-security
+        image: ahgia/api-security:0.22
+        # build: src/api-security
+        ports:
+          - '8085:80'
         environment: 
         - ASPNETCORE_ENVIRONMENT=Development
         - ASPNETCORE_URLS=http://+:80
-        - AllowedHosts="*"
-        - Mail_Host="sandbox.smtp.mailtrap.io"
+        - AllowedHosts=*
+        - Mail_Host=sandbox.smtp.mailtrap.io
         - Mail_Ssl=true
-        - Mail_Port="2525"
-        - Mail_UserName="19917d20d35cab"
-        - Mail_Password="707d3c136d22de"
-        - EmailFromDefault="cau@gia.mx"
-        - Jwt_SecretKey="qwertyuiopasdfghjklzxcvbnm123456"
-        - Jwt_Issuer="http://192.167.215.182:7856"
-        - Jwt_Audience="doiyu.mx"
-        - Jwt_subject="WebApiSecurity"
+        - Mail_Port=2525
+        - Mail_UserName=19917d20d35cab
+        - Mail_Password=707d3c136d22de
+        - EmailFromDefault=cau@gia.mx
+        - Jwt_SecretKey=qwertyuiopasdfghjklzxcvbnm123456
+        - Jwt_Issuer=http://192.167.215.182:7856
+        - Jwt_Audience=doiyu.mx
+        - Jwt_subject=WebApiSecurity
         - Jwt_ValidateIssuerSigningKey=true
         - Jwt_ValidateIssuer=false
         - Jwt_ValidateAudience=false
         - Jwt_ValidateLifetime=true
-        - Jwt_MinsDefault="60"
-        - Jwt_MinsExtraSumToMinsDefault="5"
-        - Jwt_MinsDefault="1440"
-        - DbServer_psql="localhost"
-        - DbPort_psql="5402"
-        - DbName_psql="SIG_DOIH_SECURITY_LIMPIA"
-        - DbUser_psql="postgres"
-        - DbPassword_psql="1234"
-        - ApiPrefix="/security"
+        - Jwt_MinsDefault=60
+        - Jwt_MinsExtraSumToMinsDefault=5
+        - Jwt_MinsDefault=1440
+        - DbServer_psql=host.docker.internal
+        - DbPort_psql=5402
+        - DbName_psql=SIG_DOIH_SECURITY_LIMPIA
+        - DbUser_psql=postgres
+        - DbPassword_psql=S3cret
+        - ApiPrefix=/security
         restart: always
         networks:
             custom:
@@ -75,19 +70,19 @@ services:
         environment: 
         - ASPNETCORE_ENVIRONMENT=Development
         - ASPNETCORE_URLS=http://+:80
-        - AllowedHosts="*"
-        - ServerSecurity="http://localhost:5643"
-        - Jwt_SecretKey="qwertyuiopasdfghjklzxcvbnm123456"
-        - Jwt_Issuer="http://localhost:5643"
-        - Jwt_Audience="doiyu.mx"
-        - Jwt_subject="WebApiSecurity"
+        - AllowedHosts=*
+        - ServerSecurity=http://localhost:5643
+        - Jwt_SecretKey=qwertyuiopasdfghjklzxcvbnm123456
+        - Jwt_Issuer=http://localhost:5643
+        - Jwt_Audience=doiyu.mx
+        - Jwt_subject=WebApiSecurity
         - SecurityDisable=true
-        - DbServer_psql="localhost"
-        - DbPort_psql="5402"
-        - DbName_psql="SIG_DOIH_CORE_LIMPIA"
-        - DbUser_psql="postgres"
-        - DbPassword_psql="1234"
-        - ApiPrefix="/core"
+        - DbServer_psql=host.docker.internal
+        - DbPort_psql=5402
+        - DbName_psql=SIG_DOIH_CORE_LIMPIA
+        - DbUser_psql=postgres
+        - DbPassword_psql=S3cret
+        - ApiPrefix=/core
         restart: always
         networks:
             custom:
@@ -102,12 +97,14 @@ services:
         - DbPort_psql="5402"
         - DbName_psql="SIG_DOIH_LIMPIA"
         - DbUser_psql="postgres"
-        - DbPassword_psql="1234"
+        - DbPassword_psql="S3cret"
         - ApiPrefix=inquests
         - Conf_TipoFolio=20
         - Conf_Aspectos_A_Mejorar=3
         - Conf_Dia_Limite_Aplicacion=30
         - Conf_Dia_Limite_Validar=true
+        depends_on: 
+            - postgresql
         restart: always
         networks:
             custom:
@@ -122,10 +119,12 @@ services:
           DB_HOST: host.docker.internal
           DB_PORT: 5402
           DB_DATABASE: SIG_DOIH_LIMPIA
-          DB_PASSWORD: 1234
+          DB_PASSWORD: S3cret
           DB_USER: postgres
           DB_SCHEMA: sig
           DB_LOGS: "true"
+        depends_on: 
+          - postgresql
         networks:
           custom:
     api-audits-svc:
@@ -140,7 +139,7 @@ services:
           DB_HOST: host.docker.internal
           DB_PORT: 5402
           DB_DATABASE: SIG_DOIH_LIMPIA
-          DB_PASSWORD: 1234
+          DB_PASSWORD: S3cret
           DB_USER: postgres
           DB_SCHEMA: doiyu_audits
           DB_LOGS: "true"
@@ -148,6 +147,8 @@ services:
           API_AUDITS: http://localhost:80
           API_EVENTS: http://api-events-svc
           DB_URI: mongodb://mongodb-svc:27017/doc_auditorias
+        depends_on: 
+          - postgresql
         networks:
           custom:
     api-events-svc:
@@ -161,12 +162,14 @@ services:
           DB_HOST: host.docker.internal
           DB_PORT: 5402
           DB_DATABASE: SIG_DOIH_LIMPIA
-          DB_PASSWORD: 1234
+          DB_PASSWORD: S3cret
           DB_USER: postgres
           DB_SCHEMA: doiyu_events
           DB_LOGS: "true"
           API_AUDITS: http://api-audits-svc
           API_SIG: http://sig-searchs-svc
+        depends_on: 
+          - postgresql
         networks:
           custom:
     sig.front:
@@ -183,6 +186,8 @@ services:
           DB_HOST: host.docker.internal
           DB_PORT: 5402
           DB_DATABASE: SIG_DOIH_LIMPIA
+        depends_on: 
+          - postgresql
         networks:
           custom:
     gateway:
@@ -235,27 +240,26 @@ services:
         - 80:80 #cambiar a 80
         - 443:443
         depends_on:
-        # - minio
-        # - api.security
-        # - api.storage
-        # - api.core
-        # - sig.api
+        - minio
+        - apistorage-svc
+        - api-audits-svc
+        - sig.api
         - sig.front
-        # - gateway
+        - gateway
         networks:
           custom:
-    # postgresql:
-    #   image: postgres:13.4-alpine
-    #   volumes:
-    #     - ./pg13data:/var/lib/postgresql/data
-    #   ports:
-    #     - 5402:5402
-    #   environment:
-    #     - POSTGRES_USER=postgres
-    #     - POSTGRES_PASSWORD=S3cret
-    #     - POSTGRES_DB=sig
-    #   networks:
-    #         custom:
+    postgresql:
+      image: postgres:13.4-alpine
+      volumes:
+        - ./pg13data:/var/lib/postgresql/data
+      ports:
+        - 5402:5432
+      environment:
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=S3cret
+        - POSTGRES_DB=sig
+      networks:
+            custom:
 volumes:
     data:
 
