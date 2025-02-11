@@ -3,19 +3,19 @@
 	url = git@github.com:GIA-A-DEV/api-core.git
 [submodule "src/api-security"]
 	path = src/api-security
-	url = git@github.com:GIA-A-DEV/api_security.git
+	url = git@github.com:GIA-A-DEV/api-security.git
 [submodule "src/sig-front"]
 	path = src/sig-front
 	url = git@github.com:GIA-A-DEV/sig-front.git
 [submodule "src/sig-api"]
 	path = src/sig-api
-	url = git@github.com:GIA-A-DEV/sig-coreapi.git
+	url = git@github.com:GIA-A-DEV/api-coreapi.git
 [submodule "src/api-storage"]
 	path = src/api-storage
 	url = git@github.com:GIA-A-DEV/api-storage.git
 [submodule "src/api-gateway"]
 	path = src/api-gateway
-	url = git@github.com:GIA-A-DEV/api_gateway.git
+	url = git@github.com:GIA-A-DEV/api-gateway.git
 [submodule "src/api-sig-searchs"]
 	path = src/api-sig-searchs
 	url = git@github.com:GIA-A-DEV/api-sig-searchs.git
