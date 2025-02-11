@@ -1,24 +1,24 @@
 [submodule "src/api-core"]
 	path = src/api-core
-	url = http://gitea.doiyu.mx/DOIYUDEV/api-core.git
+	url = git@github.com:GIA-A-DEV/api-core.git
 [submodule "src/api-security"]
 	path = src/api-security
-	url = http://gitea.doiyu.mx/DOIYUDEV/api_security.git
+	url = git@github.com:GIA-A-DEV/api_security.git
 [submodule "src/sig-front"]
 	path = src/sig-front
-	url = http://gitea.doiyu.mx/DOIYUDEV/sig-front.git
+	url = git@github.com:GIA-A-DEV/sig-front.git
 [submodule "src/sig-api"]
 	path = src/sig-api
-	url = http://gitea.doiyu.mx/DOIYUDEV/sig-coreapi.git
+	url = git@github.com:GIA-A-DEV/sig-coreapi.git
 [submodule "src/api-storage"]
 	path = src/api-storage
-	url = http://gitea.doiyu.mx/DOIYUDEV/api-storage.git
+	url = git@github.com:GIA-A-DEV/api-storage.git
 [submodule "src/api-gateway"]
 	path = src/api-gateway
-	url = http://gitea.doiyu.mx/DOIYUDEV/api_gateway.git
+	url = git@github.com:GIA-A-DEV/api_gateway.git
 [submodule "src/api-sig-searchs"]
 	path = src/api-sig-searchs
-	url = http://gitea.doiyu.mx/DOIYUDEV/api-sig-searchs.git
+	url = git@github.com:GIA-A-DEV/api-sig-searchs.git
 [submodule "src/api-events"]
 	path = src/api-events
 	url = git@github.com:GIA-A-DEV/api-events.git
