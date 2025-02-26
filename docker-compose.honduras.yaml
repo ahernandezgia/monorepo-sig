@@ -1,28 +1,16 @@
 services:
     sig.api:
-        build:
-            context: ./src/sig-api/vendor/laravel/sail/runtimes/8.3
-            dockerfile: Dockerfile
-            args:
-                WWWGROUP: '1000'
-        image: sail-8.3/app
-        extra_hosts:
-            - 'host.docker.internal:host-gateway'
+        image: ${API_SIG_IMAGE}
         ports:
-            - '8080:80'
-            # - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+          - '8080:80'
         environment:
-            WWWUSER: 'sail'
-            LARAVEL_SAIL: 1
-            # XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
-            # XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
-            # IGNITION_LOCAL_SITES_PATH: '${PWD}'
-        volumes:
-            - './src/sig-api/:/var/www/html'
+          DB_HOST: 10.34.0.3
+          DB_PORT: 5432
+          DB_DATABASE: sig_test
         networks:
           custom:
     apistorage-svc:
-        image: ahgia/api-storage:1.0
+        image: ${API_STORAGE_IMAGE}
         environment:
         - ENV=dev
         - DB_URI=mongodb://10.34.0.3:27017/File
@@ -39,7 +27,7 @@ services:
         networks:
           custom:
     # # apisecurity-svc:
-    # #     build: src/api-security
+    # #     image: ${API_SECURITY_IMAGE}
     # #     environment: 
     # #     - ASPNETCORE_ENVIRONMENT=Development
     # #     - ASPNETCORE_URLS=http://+:80
@@ -53,7 +41,7 @@ services:
     # #     networks:
     # #         custom:
     # # core-svc:
-    # #     build: src/api-core
+    # #     image: ${API_CORE_IMAGE}
     # #     environment: 
     # #     - ASPNETCORE_ENVIRONMENT=Development
     # #     - ASPNETCORE_URLS=http://+:80
@@ -67,7 +55,7 @@ services:
     # #     networks:
     # #         custom:
     api-inquests-svc:
-        image: ahgia/api-inquests:1.0
+        image: ${API_INQUESTS_IMAGE}
         ports:
           - 8004:80
         environment: 
@@ -87,7 +75,7 @@ services:
         networks:
             custom:
     sig-searchs-svc:
-        image: ahgia/api-sig-searchs:1.0
+        image: ${API_SEARCHS_IMAGE}
         ports:
           - "8000:80"
         environment:
@@ -104,7 +92,7 @@ services:
         networks:
           custom:
     api-audits-svc:
-        image: ahgia/api-audits:1.0
+        image: ${API_AUDITS_IMAGE}
         ports:
           - 3001:80
         restart: unless-stopped
@@ -126,7 +114,7 @@ services:
         networks:
           custom:
     api-events-svc:
-        image: ahgia/api-events:1.0
+        image: ${API_EVENTS_IMAGE}
         ports:
           - "8002:80"
         environment:
@@ -145,7 +133,7 @@ services:
         networks:
           custom:
     sig.front:
-        image: ahgia/sig-front-doih:1.12
+        image: ${SIG_FRONT_IMAGE}
         ports:
             - 81:80
             - 444:443
@@ -157,7 +145,7 @@ services:
         networks:
           custom:
     gateway:
-        image: ahgia/gateway:1.0
+        image: ${API_GATEWAY_IMAGE}
         environment:
         - ASPNETCORE_ENVIRONMENT=Docker
         - ASPNETCORE_URLS=http://+:80
@@ -167,7 +155,7 @@ services:
         networks:
           custom:
     minio:
-        image: quay.io/minio/minio:latest
+        image: ${MINIO_IMAGE}
         ports:
         - 9000:9000
         - 9001:9001
@@ -182,7 +170,7 @@ services:
         networks:
           custom:
     mongodb-svc:
-        image: mongo
+        image: ${MONGODB_IMAGE}
         environment:
         - PUID=1000
         - PGID=1000
@@ -198,7 +186,7 @@ services:
          custom:
     nginx-proxy:
         restart: always
-        image: ahgia/proxy-doih:1.1
+        image: ${REVERSE_PROXY_IMAGE}
         ports:
         - 80:80 #cambiar a 80
         - 443:443
