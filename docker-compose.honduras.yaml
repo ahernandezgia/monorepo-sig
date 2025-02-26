@@ -26,34 +26,34 @@ services:
         - DB_SCHEMA=Human_resources
         networks:
           custom:
-    # # apisecurity-svc:
-    # #     image: ${API_SECURITY_IMAGE}
-    # #     environment: 
-    # #     - ASPNETCORE_ENVIRONMENT=Development
-    # #     - ASPNETCORE_URLS=http://+:80
-    # #     - DbServer_psql="10.152.200.37"
-    # #     - DbPort_psql="5432"
-    # #     - DbName_psql="sig_h_security"
-    # #     - DbUser_psql="postgres"
-    # #     - DbPassword_psql="Limeade7,Oxygen,Chaps"
-    # #     - ApiPrefix=security
-    # #     restart: always
-    # #     networks:
-    # #         custom:
-    # # core-svc:
-    # #     image: ${API_CORE_IMAGE}
-    # #     environment: 
-    # #     - ASPNETCORE_ENVIRONMENT=Development
-    # #     - ASPNETCORE_URLS=http://+:80
-    # #     - DbServer_psql="10.152.200.37"
-    # #     - DbPort_psql="5432"
-    # #     - DbName_psql="sig_h_core"
-    # #     - DbUser_psql="postgres"
-    # #     - DbPassword_psql="Limeade7,Oxygen,Chaps"
-    # #     - ApiPrefix=core
-    # #     restart: always
-    # #     networks:
-    # #         custom:
+    apisecurity-svc:
+        image: ${API_SECURITY_IMAGE}
+        environment: 
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_URLS=http://+:80
+        - DbServer_psql="10.34.0.3"
+        - DbPort_psql="5432"
+        - DbName_psql="sig_test_security"
+        - DbUser_psql="postgres"
+        - DbPassword_psql="Limeade7,Oxygen,Chaps"
+        - ApiPrefix=security
+        restart: always
+        networks:
+            custom:
+    core-svc:
+        image: ${API_CORE_IMAGE}
+        environment: 
+        - ASPNETCORE_ENVIRONMENT=Development
+        - ASPNETCORE_URLS=http://+:80
+        - DbServer_psql="10.34.0.3"
+        - DbPort_psql="5432"
+        - DbName_psql="sig_test_core"
+        - DbUser_psql="postgres"
+        - DbPassword_psql="Limeade7,Oxygen,Chaps"
+        - ApiPrefix=core
+        restart: always
+        networks:
+            custom:
     api-inquests-svc:
         image: ${API_INQUESTS_IMAGE}
         ports:
