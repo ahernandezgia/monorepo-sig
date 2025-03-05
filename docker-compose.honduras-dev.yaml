@@ -1,20 +1,21 @@
 services:
     sig.api:
-        build: 
-         context: /src/sig-api
-         dockerfile: Dockerfile
+        image: ${API_SIG_IMAGE}
+        # build: 
+        #  context: /src/sig-api
         ports:
           - '8080:80'
         volumes:
            - './src/sig-api/:/var/www/html'
-        environment:
-          DB_HOST: host.docker.internal
-          DB_PORT: 5402
-          DB_DATABASE: SIG_DOIH_LIMPIA
+        # environment:
+        #   DB_HOST: host.docker.internal
+        #   DB_PORT: 5402
+        #   DB_DATABASE: SIG_DOIH_LIMPIA
         networks:
           custom:
     apistorage-svc:
-        image: ahgia/api-storage:1.0
+        image: ${API_STORAGE_IMAGE}
+        # build: src/api-storage
         environment:
         - ENV=dev
         - DB_URI=mongodb://host.docker.internal:27017/File
@@ -27,11 +28,12 @@ services:
         - DB_DATABASE=SIG_DOIH_LIMPIA
         - DB_USER=postgres
         - DB_PASSWORD=S3cret
-        - DB_SCHEMA=Human_resources
+        - DB_SCHEMA=storage
+        - DB_SYNC=true
         networks:
           custom:
     apisecurity-svc:
-        image: ahgia/api-security:0.22
+        image: ${API_SECURITY_IMAGE}
         # build: src/api-security
         ports:
           - '8085:80'
@@ -66,7 +68,8 @@ services:
         networks:
             custom:
     core-svc:
-        build: src/api-core
+        image: ${API_CORE_IMAGE}
+        # build: src/api-core
         environment: 
         - ASPNETCORE_ENVIRONMENT=Development
         - ASPNETCORE_URLS=http://+:80
@@ -87,7 +90,8 @@ services:
         networks:
             custom:
     api-inquests-svc:
-        image: ahgia/api-inquests:1.0
+        # image: ${API_INQUESTS_IMAGE}
+        build: src/api-inquests
         ports:
           - 8004:80
         environment: 
@@ -109,7 +113,8 @@ services:
         networks:
             custom:
     sig-searchs-svc:
-        image: ahgia/api-sig-searchs:1.0
+        image: ${API_SEARCHS_IMAGE}
+        # build: src/api-sig-searchs
         ports:
           - "8000:80"
         environment:
@@ -128,7 +133,8 @@ services:
         networks:
           custom:
     api-audits-svc:
-        image: ahgia/api-audits:1.0
+        image: ${API_AUDITS_IMAGE}
+        # build: src/api-audits
         ports:
           - 3001:80
         restart: unless-stopped
@@ -152,7 +158,8 @@ services:
         networks:
           custom:
     api-events-svc:
-        image: ahgia/api-events:1.0
+        image: ${API_EVENTS_IMAGE}
+        # build: src/api-events
         ports:
           - "8002:80"
         environment:
@@ -173,7 +180,7 @@ services:
         networks:
           custom:
     sig.front:
-        # image: ahgia/sig-front-doih:1.12
+        # image: ${SIG_FRONT_IMAGE}
         build: 
          context: /src/sig-front
          dockerfile: Dockerfile.doih
@@ -182,16 +189,17 @@ services:
             - 444:443
         volumes:
            - './src/sig-front/:/var/www/html'
-        environment:
-          DB_HOST: host.docker.internal
-          DB_PORT: 5402
-          DB_DATABASE: SIG_DOIH_LIMPIA
+        # environment:
+        #   DB_HOST: host.docker.internal
+        #   DB_PORT: 5402
+        #   DB_DATABASE: SIG_DOIH_LIMPIA
         depends_on: 
           - postgresql
         networks:
           custom:
     gateway:
-        image: ahgia/gateway:1.0
+        image: ${API_GATEWAY_IMAGE}
+        # build: src/api-gateway
         environment:
         - ASPNETCORE_ENVIRONMENT=Docker
         - ASPNETCORE_URLS=http://+:80
@@ -200,23 +208,8 @@ services:
         - VIRTUAL_PORT=80
         networks:
           custom:
-    minio:
-        image: quay.io/minio/minio:latest
-        ports:
-        - 9000:9000
-        - 9001:9001
-        environment:
-            MINIO_ROOT_USER: ahernandez
-            MINIO_ROOT_PASSWORD: password123
-            MINIO_BROWSER_REDIRECT_URL: https://s3.doih.hn/minio/ui/
-            MINIO_DOMAIN: s3.doih.hn
-        volumes:
-        - ./s3:/data
-        command: server /data --address ":9000" --console-address ":9001"
-        networks:
-          custom:
     mongodb-svc:
-        image: mongo
+        image: ${MONGODB_IMAGE}
         environment:
         - PUID=1000
         - PGID=1000
@@ -230,12 +223,27 @@ services:
         restart: unless-stopped
         networks:
          custom:
+    minio:
+        image: ${MINIO_IMAGE}
+        ports:
+        - 9000:9000
+        - 9001:9001
+        environment:
+            MINIO_ROOT_USER: ahernandez
+            MINIO_ROOT_PASSWORD: password123
+            MINIO_BROWSER_REDIRECT_URL: https://s3.doih.hn/minio/ui/
+            MINIO_DOMAIN: s3.doih.hn
+        volumes:
+        - ./s3:/data
+        command: server /data --address ":9000" --console-address ":9001"
+        networks:
+          custom:
     nginx-proxy:
         restart: always
-        # image: ahgia/proxy:1.6
-        build: 
-          context: ./reverse-proxy/
-          dockerfile: Dockerfile.doih
+        image: ${REVERSE_PROXY_IMAGE}
+        # build: 
+        #   context: ./reverse-proxy/
+        #   dockerfile: Dockerfile.doih
         ports:
         - 80:80 #cambiar a 80
         - 443:443
@@ -260,6 +268,17 @@ services:
         - POSTGRES_DB=sig
       networks:
             custom:
+    rabbitmq-svc:
+      container_name: rabbitmq
+      image: ${RABBIT_IMAGE}
+      ports: 
+        - 5672:5672
+        - 15672:15672
+      environment:
+        - RABBITMQ_DEFAULT_USER=myuser
+        - RABBITMQ_DEFAULT_PASS=mypassword
+      networks:
+        custom:
 volumes:
     data:
 

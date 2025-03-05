@@ -7,6 +7,7 @@ services:
           DB_HOST: 10.34.0.3
           DB_PORT: 5432
           DB_DATABASE: sig_test
+          DB_PASSWORD: Limeade7,Oxygen,Chaps
         networks:
           custom:
     apistorage-svc:
@@ -184,6 +185,17 @@ services:
         restart: unless-stopped
         networks:
          custom:
+    rabbitmq-svc:
+      container_name: rabbitmq
+      image: ${RABBIT_IMAGE}
+      ports: 
+        - 5672:5672
+        - 15672:15672
+      environment:
+        - RABBITMQ_DEFAULT_USER=myuser
+        - RABBITMQ_DEFAULT_PASS=mypassword
+      networks:
+        custom:
     nginx-proxy:
         restart: always
         image: ${REVERSE_PROXY_IMAGE}
