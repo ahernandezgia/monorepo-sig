@@ -31,3 +31,6 @@
 [submodule "src/api-tickets"]
 	path = src/api-tickets
 	url = git@github.com:GIA-A-DEV/api-tickets.git
+[submodule "src/api-gateway-ocelot"]
+	path = src/api-gateway-ocelot
+	url = git@github.com:GIA-A-DEV/api-gateway-ocelot.git
